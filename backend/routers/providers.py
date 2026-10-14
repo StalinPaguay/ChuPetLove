@@ -16,17 +16,30 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 
-from ..database import get_db
-from ..models import Provider, ProviderProductItem, User, UserRole
-from ..schemas import (
-    ProviderCreate,
-    ProviderUpdate,
-    ProviderResponse,
-    ProviderProductItemResponse,
-    ProviderProductItemCreate,
-    ProviderProductItemUpdate
-)
-from ..security import require_roles
+try:
+    from ..database import get_db
+    from ..models import Provider, ProviderProductItem, User, UserRole
+    from ..schemas import (
+        ProviderCreate,
+        ProviderUpdate,
+        ProviderResponse,
+        ProviderProductItemResponse,
+        ProviderProductItemCreate,
+        ProviderProductItemUpdate
+    )
+    from ..security import require_roles
+except (ImportError, ValueError):
+    from database import get_db
+    from models import Provider, ProviderProductItem, User, UserRole
+    from schemas import (
+        ProviderCreate,
+        ProviderUpdate,
+        ProviderResponse,
+        ProviderProductItemResponse,
+        ProviderProductItemCreate,
+        ProviderProductItemUpdate
+    )
+    from security import require_roles
 
 router = APIRouter(prefix="/api/providers", tags=["Gestión de Proveedores"])
 

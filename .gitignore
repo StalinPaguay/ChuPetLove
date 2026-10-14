@@ -62,3 +62,7 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Herramientas de agentes IA (Gemini / Antigravity)
+.gemini/
+.agents/

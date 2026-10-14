@@ -18,7 +18,10 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 
-from .models import Order
+try:
+    from .models import Order
+except (ImportError, ValueError):
+    from models import Order
 
 
 def generate_invoice_pdf(order: Order, iva_percentage: float) -> bytes:

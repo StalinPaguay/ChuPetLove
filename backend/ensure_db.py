@@ -7,6 +7,15 @@ Ejecutar antes del primer arranque del servidor:
 ChuPetLove Backend - Tienda de Mascotas (Ecuador)
 """
 
+import sys
+import os
+
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 

@@ -18,10 +18,16 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from ..database import get_db
-from ..models import UserCard, User, UserRole
-from ..schemas import UserCardCreate, UserCardResponse
-from ..security import get_current_user, require_roles
+try:
+    from ..database import get_db
+    from ..models import UserCard, User, UserRole
+    from ..schemas import UserCardCreate, UserCardResponse
+    from ..security import get_current_user, require_roles
+except (ImportError, ValueError):
+    from database import get_db
+    from models import UserCard, User, UserRole
+    from schemas import UserCardCreate, UserCardResponse
+    from security import get_current_user, require_roles
 
 router = APIRouter(prefix="/api/cards", tags=["Billetera de Tarjetas (Banco Pichincha)"])
 

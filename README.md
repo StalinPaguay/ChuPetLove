@@ -89,6 +89,21 @@ El sistema fue sometido a una auditoría automatizada integral con **24 pruebas 
 
 ---
 
+## 🔒 Cierre de Sesión Automático por Inactividad
+
+El sistema implementa un mecanismo de seguridad que protege las sesiones de usuario frente al abandono no intencional:
+
+* **Temporizador:** 10 minutos (600 000 ms) sin actividad detectada.
+* **Eventos Monitoreados:** `click`, `mousemove`, `mousedown`, `keydown`, `touchstart`, `scroll`.
+* **Al Expirar:**
+  1. Se elimina el token JWT (`localStorage`).
+  2. Se muestra una alerta visual premium con el mensaje: *"Tu tiempo de uso del sistema ha expirado, vuelve a iniciar sesión"*.
+  3. El usuario es redirigido automáticamente a la pantalla de Login.
+
+> Esta funcionalidad cumple con el pilar de **Seguridad** de la norma ISO/IEC 25010.
+
+---
+
 ## 🛠️ Instalación y Ejecución Local
 
 ### Prerrequisitos
@@ -104,27 +119,24 @@ cd ChuPetLove
 
 ### 2. Configurar y Levantar el Backend
 ```bash
-# Navegar a la carpeta backend
-cd backend
-
-# Instalar dependencias
-pip install -r requirements.txt
+# Instalar dependencias (desde la raíz del proyecto)
+pip install -r backend/requirements.txt
 
 # Configurar variables de entorno (copiar plantilla)
-cp .env.example .env
+cp backend/.env.example backend/.env
 
 # (Opcional) Inicializar base de datos PostgreSQL
-python ensure_db.py
+py -m backend.ensure_db
 
-# Iniciar el servidor API FastAPI
-uvicorn main:app --reload --port 8000
+# Iniciar el servidor API FastAPI (ejecutar desde la raíz del proyecto)
+py -m uvicorn backend.main:app --reload --port 8000
 ```
 > La documentación interactiva Swagger UI estará disponible en: **`http://localhost:8000/docs`**
 
 ### 3. Ejecutar las Pruebas de Auditoría ISO/IEC 25010
 ```bash
-# Desde la carpeta backend
-python test_audit_iso25010.py
+# Desde la raíz del proyecto
+py backend/test_audit_iso25010.py
 ```
 
 ### 4. Configurar y Levantar el Frontend
@@ -155,3 +167,4 @@ npm run dev
 ## 📜 Licencia
 
 Proyecto desarrollado y certificado bajo la Licencia **MIT**. Todos los derechos reservados © 2026 ChuPetLove S.A.
+

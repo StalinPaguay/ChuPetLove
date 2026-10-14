@@ -11,10 +11,16 @@ ChuPetLove Backend - Tienda de Mascotas (Ecuador)
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from ..database import get_db
-from ..models import SystemConfig, User, UserRole
-from ..schemas import SystemConfigUpdate, SystemConfigResponse
-from ..security import require_roles
+try:
+    from ..database import get_db
+    from ..models import SystemConfig, User, UserRole
+    from ..schemas import SystemConfigUpdate, SystemConfigResponse
+    from ..security import require_roles
+except (ImportError, ValueError):
+    from database import get_db
+    from models import SystemConfig, User, UserRole
+    from schemas import SystemConfigUpdate, SystemConfigResponse
+    from security import require_roles
 
 router = APIRouter(prefix="/api/config", tags=["Configuración del Sistema (IVA)"])
 

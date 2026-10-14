@@ -13,12 +13,20 @@ ChuPetLove Backend - Tienda de Mascotas (Ecuador)
 
 import logging
 from sqlalchemy.orm import Session
-from .database import SessionLocal, engine, Base
-from .models import (
-    User, UserRole, SystemConfig, Provider, Product,
-    ProductCategory, PetType, ProviderProductItem, InventoryPurchase
-)
-from .security import hash_password
+try:
+    from .database import SessionLocal, engine, Base
+    from .models import (
+        User, UserRole, SystemConfig, Provider, Product,
+        ProductCategory, PetType, ProviderProductItem, InventoryPurchase
+    )
+    from .security import hash_password
+except (ImportError, ValueError):
+    from database import SessionLocal, engine, Base
+    from models import (
+        User, UserRole, SystemConfig, Provider, Product,
+        ProductCategory, PetType, ProviderProductItem, InventoryPurchase
+    )
+    from security import hash_password
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

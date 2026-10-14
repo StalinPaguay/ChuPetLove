@@ -29,7 +29,10 @@ from sqlalchemy import (
     func
 )
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from .database import Base
+try:
+    from .database import Base
+except (ImportError, ValueError):
+    from database import Base
 
 
 # ==========================================

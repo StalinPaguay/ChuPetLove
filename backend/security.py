@@ -16,9 +16,14 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
-from .database import get_db
-from .models import User, UserRole
-from .schemas import TokenData
+try:
+    from .database import get_db
+    from .models import User, UserRole
+    from .schemas import TokenData
+except (ImportError, ValueError):
+    from database import get_db
+    from models import User, UserRole
+    from schemas import TokenData
 
 env_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
 if os.path.exists(env_path):

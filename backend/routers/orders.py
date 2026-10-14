@@ -18,26 +18,48 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Response, Query, UploadFile, File, status
 from sqlalchemy.orm import Session, joinedload
 
-from ..database import get_db
-from ..models import (
-    Order,
-    OrderItem,
-    Product,
-    SystemConfig,
-    UserCard,
-    User,
-    UserRole,
-    PaymentMethod,
-    PaymentStatus
-)
-from ..schemas import (
-    CheckoutRequest,
-    OrderStatusUpdate,
-    OrderResponse,
-    OrderItemResponse
-)
-from ..security import get_current_user, require_roles
-from ..pdf_generator import generate_invoice_pdf
+try:
+    from ..database import get_db
+    from ..models import (
+        Order,
+        OrderItem,
+        Product,
+        SystemConfig,
+        UserCard,
+        User,
+        UserRole,
+        PaymentMethod,
+        PaymentStatus
+    )
+    from ..schemas import (
+        CheckoutRequest,
+        OrderStatusUpdate,
+        OrderResponse,
+        OrderItemResponse
+    )
+    from ..security import get_current_user, require_roles
+    from ..pdf_generator import generate_invoice_pdf
+except (ImportError, ValueError):
+    from database import get_db
+    from models import (
+        Order,
+        OrderItem,
+        Product,
+        SystemConfig,
+        UserCard,
+        User,
+        UserRole,
+        PaymentMethod,
+        PaymentStatus
+    )
+    from schemas import (
+        CheckoutRequest,
+        OrderStatusUpdate,
+        OrderResponse,
+        OrderItemResponse
+    )
+    from security import get_current_user, require_roles
+    from pdf_generator import generate_invoice_pdf
 
 router = APIRouter(prefix="/api/orders", tags=["Órdenes, Checkout y Facturación"])
 

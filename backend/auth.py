@@ -20,24 +20,44 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, func
 
-from .database import get_db
-from .models import User, UserRole
-from .schemas import (
-    UserRegister,
-    UserAdminCreate,
-    UserAdminUpdate,
-    UserLogin,
-    UserResponse,
-    UserUpdateStatus,
-    Token
-)
-from .security import (
-    hash_password,
-    verify_password,
-    create_access_token,
-    get_current_user,
-    require_roles
-)
+try:
+    from .database import get_db
+    from .models import User, UserRole, Order
+    from .schemas import (
+        UserRegister,
+        UserAdminCreate,
+        UserAdminUpdate,
+        UserLogin,
+        UserResponse,
+        UserUpdateStatus,
+        Token
+    )
+    from .security import (
+        hash_password,
+        verify_password,
+        create_access_token,
+        get_current_user,
+        require_roles
+    )
+except (ImportError, ValueError):
+    from database import get_db
+    from models import User, UserRole, Order
+    from schemas import (
+        UserRegister,
+        UserAdminCreate,
+        UserAdminUpdate,
+        UserLogin,
+        UserResponse,
+        UserUpdateStatus,
+        Token
+    )
+    from security import (
+        hash_password,
+        verify_password,
+        create_access_token,
+        get_current_user,
+        require_roles
+    )
 
 router = APIRouter(prefix="/api/auth", tags=["Autenticación y Usuarios"])
 
@@ -456,7 +476,6 @@ def admin_delete_user(
         )
 
     # Verificar integridad referencial: usuarios con órdenes no pueden eliminarse
-    from .models import Order
     has_orders = db.query(Order).filter(Order.user_id == user_id).first()
     if has_orders:
         raise HTTPException(

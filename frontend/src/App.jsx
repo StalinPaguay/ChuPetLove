@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/Header';
 import Catalog from './components/Catalog';
 import CartDrawer from './components/CartDrawer';
@@ -11,6 +11,8 @@ import ProvidersModal from './components/ProvidersModal';
 import ProductFormModal from './components/ProductFormModal';
 import Toast from './components/Toast';
 import ClientOrdersModal from './components/ClientOrdersModal';
+import SessionExpiredOverlay from './components/SessionExpiredOverlay';
+import useInactivityTimer from './hooks/useInactivityTimer';
 
 import { INITIAL_PRODUCTS } from './data/mockProducts';
 import {
@@ -167,6 +169,31 @@ export default function App() {
 
   // 4. Toast alerts
   const [toasts, setToasts] = useState([]);
+
+  // 5. Inactivity session expiry state
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+  // Callback ejecutado por useInactivityTimer cuando expiran 10 min sin actividad
+  const handleInactivityExpire = useCallback(() => {
+    // Limpiar tokens y datos de sesión
+    setAuthToken(null);
+    setStoredUser(null);
+    // Mostrar overlay antes de destruir el currentUser
+    setSessionExpired(true);
+  }, []);
+
+  // Hook de inactividad: solo activo cuando hay sesión iniciada
+  useInactivityTimer({
+    onExpire: handleInactivityExpire,
+    isActive: !!currentUser,
+  });
+
+  // Cierra el overlay y redirige al login (setCurrentUser(null) desmonta las vistas)
+  const handleSessionExpiredClose = useCallback(() => {
+    setSessionExpired(false);
+    setCurrentUser(null);
+    setCartItems([]);
+  }, []);
 
   const showToast = (type, message, title = '') => {
     const id = Date.now() + Math.random();
@@ -700,6 +727,12 @@ export default function App() {
           clearError={() => setAuthError('')}
         />
         <Toast toasts={toasts} onDismiss={dismissToast} />
+        {/* Overlay de expiración: se puede mostrar sobre el login si el usuario
+            ya estaba en sesión y el overlay se disparó antes de desmontarse */}
+        <SessionExpiredOverlay
+          visible={sessionExpired}
+          onClose={handleSessionExpiredClose}
+        />
       </>
     );
   }
@@ -852,6 +885,12 @@ export default function App() {
 
       {/* Toast Notifications */}
       <Toast toasts={toasts} onDismiss={dismissToast} />
+
+      {/* Overlay de Sesión Expirada por Inactividad (10 min) */}
+      <SessionExpiredOverlay
+        visible={sessionExpired}
+        onClose={handleSessionExpiredClose}
+      />
     </div>
   );
 }

@@ -20,21 +20,38 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 
-from ..database import get_db
-from ..models import (
-    Product, Provider, ProviderProductItem, InventoryPurchase,
-    ProductCategory, PetType, User, UserRole
-)
-from ..schemas import (
-    ProductCreate,
-    ProductCreateLegacy,
-    ProductUpdate,
-    ProductRestock,
-    ProductResponse,
-    LowStockAlertResponse,
-    InventoryPurchaseResponse
-)
-from ..security import require_roles, get_current_user
+try:
+    from ..database import get_db
+    from ..models import (
+        Product, Provider, ProviderProductItem, InventoryPurchase,
+        ProductCategory, PetType, User, UserRole, OrderItem
+    )
+    from ..schemas import (
+        ProductCreate,
+        ProductCreateLegacy,
+        ProductUpdate,
+        ProductRestock,
+        ProductResponse,
+        LowStockAlertResponse,
+        InventoryPurchaseResponse
+    )
+    from ..security import require_roles, get_current_user
+except (ImportError, ValueError):
+    from database import get_db
+    from models import (
+        Product, Provider, ProviderProductItem, InventoryPurchase,
+        ProductCategory, PetType, User, UserRole, OrderItem
+    )
+    from schemas import (
+        ProductCreate,
+        ProductCreateLegacy,
+        ProductUpdate,
+        ProductRestock,
+        ProductResponse,
+        LowStockAlertResponse,
+        InventoryPurchaseResponse
+    )
+    from security import require_roles, get_current_user
 
 router = APIRouter(prefix="/api/products", tags=["Gestión de Productos e Inventario"])
 
@@ -462,7 +479,6 @@ def delete_product(
     current_user: User = Depends(require_roles([UserRole.ADMIN]))
 ):
     """Elimina un producto del catálogo (disponible únicamente para Administradores)."""
-    from ..models import OrderItem
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(

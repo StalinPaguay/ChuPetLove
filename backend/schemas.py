@@ -8,7 +8,10 @@ from datetime import datetime
 from typing import Optional, List, Any
 import re
 from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
-from .models import UserRole, ProductCategory, PetType, PaymentMethod, PaymentStatus
+try:
+    from .models import UserRole, ProductCategory, PetType, PaymentMethod, PaymentStatus
+except (ImportError, ValueError):
+    from models import UserRole, ProductCategory, PetType, PaymentMethod, PaymentStatus
 
 
 # ==========================================
